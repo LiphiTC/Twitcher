@@ -1,7 +1,7 @@
 
 # Twitcher
 
-Twitcher is a C# library based on [TwitchLib](https://github.com/TwitchLib/TwitchLib) whith some features
+Twitcher is a C# library based on [TwitchLib](https://github.com/TwitchLib/TwitchLib) with some features
 
 ## Usage
 
