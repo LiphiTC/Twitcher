@@ -103,5 +103,11 @@ public class TestController : Controller
 ``` 
 ## Json Helper
 
+## Project uses
+[TwitchLib](https://github.com/TwitchLib/TwitchLib)
+[Config .NET](https://github.com/aloneguid/config)
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
