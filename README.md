@@ -76,7 +76,7 @@ and 2 Properties: Message and Client
 ## Controller Services
 Controller services are provided as parameters to the controller constructor  
 
-To create you service create Factory, Service class and Service Settings
+To create your service create Factory, Service class and Service Settings
 
 Example Factory: 
 ```c#
