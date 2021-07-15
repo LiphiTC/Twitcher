@@ -6017,7 +6017,7 @@
     "/home/liphi/.nuget/packages/": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "0.0.1",
     "restore": {
       "projectUniqueName": "/home/liphi/LiphiBot/Twitcher/src/Twitcher.csproj",
       "projectName": "Twitcher",

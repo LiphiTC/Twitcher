@@ -24,7 +24,7 @@ namespace Twitcher.Controllers.JsonHelper
             {
                 string text = File.ReadAllText(path);
                 JObject o = JObject.Parse(File.ReadAllText(path));
-                JContainer container = (JContainer)o.SelectToken(selector);
+                JToken container = (JToken)o.SelectToken(selector);
                 if (container == default)
                 {
                     o.Add(selector, string.Empty);
@@ -46,7 +46,7 @@ namespace Twitcher.Controllers.JsonHelper
             string text = File.ReadAllText(path);
 
             JObject o = JObject.Parse(File.ReadAllText(path));
-            JContainer container = (JContainer)o.SelectToken(selector);
+            JToken container = (JToken)o.SelectToken(selector);
             if (container != null)
                 o.Remove(selector);
 
