@@ -76,7 +76,7 @@ and 2 Properties: Message and Client
 ## Controller Services
 Controller services are provided as parameters to the controller constructor  
 
-To create you service create Factory, Service class and Service Settings
+To create your service create Factory, Service class and Service Settings
 
 Example Factory: 
 ```c#
@@ -102,6 +102,12 @@ public class TestController : Controller
 }
 ``` 
 ## Json Helper
+
+## Project uses
+[TwitchLib](https://github.com/TwitchLib/TwitchLib)
+[Config .NET](https://github.com/aloneguid/config)
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
