@@ -24,6 +24,15 @@ namespace Twitcher.Controllers
         public TwitcherClient BuildControllers()
         {
             RegisterControllers();
+            _client.Bot.OnJoinedChannel += (object sender, OnJoinedChannelArgs args) => {
+                Dictionary<ControllerMethodDefinition, DateTime> used = new Dictionary<ControllerMethodDefinition, DateTime>();
+                foreach(var c in _manager.Controllers) {
+                    foreach (var m in c.Methods) {
+                        used.Add(m, DateTime.MinValue);
+                    }
+                }
+                _manager.CommandUsed.Add(args.Channel, used);
+            };
             _client.Bot.OnMessageReceived += (object sender, OnMessageReceivedArgs args) =>
             {
                 var controllers = _manager.Controllers.Where(x =>
@@ -33,20 +42,20 @@ namespace Twitcher.Controllers
                 && (!x.IsForVips || (x.IsForVips && args.ChatMessage.IsVip))
                 && (!x.IsForSubscriber || (x.IsForSubscriber && args.ChatMessage.IsSubscriber && (x.MinSubDate == 0 || x.MinSubDate >= args.ChatMessage.SubscribedMonthCount)))
                 );
-
+                var methods = new Dictionary<ControllerDefinition, ControllerMethodDefinition>();
                 foreach (var c in controllers)
                 {
-                    var methods = c.Methods.Where(x =>
+                    foreach (var m in c.Methods)
                     {
                         bool isStartWith = false;
-                        if (x.StartWith != null)
+                        if (m.StartWith != null)
                         {
                             string searchString = args.ChatMessage.Message;
-                            if (!x.StartWithRegiterCheck)
+                            if (!m.StartWithRegiterCheck)
                                 searchString = searchString.ToLower();
 
-                            if ((x.StartWithIsFullWord && searchString.Split(' ')[0] == x.StartWith) ||
-                               ((!x.StartWithIsFullWord && searchString.StartsWith(x.StartWith))))
+                            if ((m.StartWithIsFullWord && searchString.Split(' ')[0] == m.StartWith) ||
+                               ((!m.StartWithIsFullWord && searchString.StartsWith(m.StartWith))))
                                 isStartWith = true;
 
                         }
@@ -57,13 +66,13 @@ namespace Twitcher.Controllers
 
                         bool isContains = false;
 
-                        if (x.Contains != null)
+                        if (m.Contains != null)
                         {
                             string searchString = args.ChatMessage.Message;
-                            if (!x.ContainsRegiterCheck)
+                            if (!m.ContainsRegiterCheck)
                                 searchString = searchString.ToLower();
 
-                            if (searchString.Contains(x.Contains))
+                            if (searchString.Contains(m.Contains))
                                 isContains = true;
                         }
                         else
@@ -73,63 +82,65 @@ namespace Twitcher.Controllers
 
                         bool isSame = false;
 
-                        if (x.Same != null)
+                        if (m.Same != null)
                         {
                             string searchString = args.ChatMessage.Message;
-                            if (!x.SameRegisterCheck)
+                            if (!m.SameRegisterCheck)
                                 searchString = searchString.ToLower();
 
-                            if (searchString == x.Same)
+                            if (searchString == m.Same)
                                 isSame = true;
                         }
                         else
                         {
                             isSame = true;
                         }
-                        return (x.Channels.Any(m => m == "any") || x.Channels.Any(m => m == args.ChatMessage.Channel.ToLower()))
-                         && (x.Users.Any(m => m == "any") || x.Users.Any(m => m == args.ChatMessage.Username))
-                         && (!x.IsForMod || (x.IsForMod && args.ChatMessage.IsModerator))
-                         && (!x.IsForVips || (x.IsForVips && args.ChatMessage.IsVip))
-                         && (!x.IsForSubscriber ||
-                            (x.IsForSubscriber && args.ChatMessage.IsSubscriber && (x.MinSubDate == 0 || x.MinSubDate <= args.ChatMessage.SubscribedMonthCount)))
+                        if ((m.Channels.Any(m => m == "any") || m.Channels.Any(m => m == args.ChatMessage.Channel.ToLower()))
+                         && (m.Users.Any(m => m == "any") || m.Users.Any(m => m == args.ChatMessage.Username))
+                         && (!m.IsForMod || (m.IsForMod && args.ChatMessage.IsModerator))
+                         && (!m.IsForVips || (m.IsForVips && args.ChatMessage.IsVip))
+                         && (!m.IsForSubscriber ||
+                            (m.IsForSubscriber && args.ChatMessage.IsSubscriber && (m.MinSubDate == 0 || m.MinSubDate <= args.ChatMessage.SubscribedMonthCount)))
                          && isStartWith
                          && isContains
-                         && isSame;
-                    });
-
-                    var singleMethod = methods.FirstOrDefault(x => x.IsSingle);
-                    if (!singleMethod.Equals(default(ControllerMethodDefinition)))
-                    {
-                        ExecuteControllerMethod(singleMethod, c, args.ChatMessage);
-                        return;
+                         && isSame)
+                        {
+                            methods.Add(c, m);
+                        }
                     }
+                }
+                var singleMethod = methods.FirstOrDefault(x => x.Value.IsSingle);
+                
 
-                    foreach (var m in methods)
-                    {
-                        ExecuteControllerMethod(m, c, args.ChatMessage);
-                    }
+                if (!singleMethod.Equals(default(KeyValuePair<ControllerDefinition, ControllerMethodDefinition>)))
+                {
+                    ExecuteControllerMethod(singleMethod.Value, singleMethod.Key, args.ChatMessage);
+                    return;
+                }
+
+                foreach (var method in methods)
+                {
+                    ExecuteControllerMethod(method.Value, method.Key, args.ChatMessage);
                 }
             };
             return _client;
         }
         private void ExecuteControllerMethod(ControllerMethodDefinition methodDefinition, ControllerDefinition controllerDefinition, ChatMessage message)
         {
-            if (DateTime.Now < _manager.LastUsedCommand[methodDefinition].AddSeconds(methodDefinition.CoolDown))
+            if (DateTime.Now < _manager.CommandUsed[message.Channel][methodDefinition].AddSeconds(methodDefinition.CoolDown))
                 return;
 
+            _manager.CommandUsed[message.Channel][methodDefinition] = DateTime.Now;
 
 
-            _manager.LastUsedCommand[methodDefinition] = DateTime.Now;
-
-            
             var controller = Activator.CreateInstance(controllerDefinition.ControllerType, GetServices(controllerDefinition.ControllerType, message));
             controllerDefinition.ControllerType.GetProperty("Client").SetValue(controller, _client);
             controllerDefinition.ControllerType.GetProperty("Message").SetValue(controller, message);
             methodDefinition.MethodInfo.Invoke(controller, new object[0]);
-            
+
         }
-        
-        public ControllerBuilder RegisterService<T, TSettings, TFactory>(TSettings settings) 
+
+        public ControllerBuilder RegisterService<T, TSettings, TFactory>(TSettings settings)
          where T : class
          where TFactory : IServiceFactory<T, TSettings>, new()
         {
@@ -140,10 +151,10 @@ namespace Twitcher.Controllers
                 throw new ArgumentException("This service is already registered");
 
             _manager.Services.Add(new Service(typeof(T), typeof(TFactory), settings));
-            
+
             return this;
         }
-        
+
         private object[] GetServices(Type controllerType, ChatMessage message)
         {
             ConstructorInfo[] constructors = controllerType.GetConstructors();
@@ -285,7 +296,6 @@ namespace Twitcher.Controllers
 
                     sameAttribute == null ? false : sameAttribute.RegisterCheck
                 );
-                _manager.LastUsedCommand.Add(method, (DateTime.Now - new TimeSpan(method.CoolDown * TimeSpan.TicksPerSecond)));
                 methods.Add(method);
 
             }

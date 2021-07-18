@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Config.Net;
 using TwitchLib.Client.Models;
 
 namespace Twitcher.Controllers
@@ -41,13 +40,13 @@ namespace Twitcher.Controllers
         public string Same { get; }
         public bool SameRegisterCheck { get; }
 
-        public ControllerMethodDefinition(MethodInfo method, string[] channels, string[] users,
+        public ControllerMethodDefinition(MethodInfo methodInfo, string[] channels, string[] users,
         bool isForMods, bool isForVips, bool isForSubscriber,
         int minSubDate, string contains, bool containsRegisterCheck,
         string startWith, bool startWithFullWord, bool startWithRegiterCheck,
         bool isSingle, long coolDown, string same, bool sameRegisterCheck)
         {
-            MethodInfo = method;
+            MethodInfo = methodInfo;
             Channels = channels;
             Users = users;
             IsForMod = isForMods;

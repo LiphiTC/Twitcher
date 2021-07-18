@@ -12,7 +12,7 @@ namespace Testing
         {
             Console.WriteLine(Environment.Version);
             TwitcherClient d = new TwitcherClient()
-            .UseTwitchLibProvider(new ConnectionCredentials("liphitc", "YEP")) 
+            .UseTwitchLibProvider(new ConnectionCredentials("LiphiTC", "rfx9shas67l3gy289k6mwx0vzrvo71")) 
             .JoinChannels(new string[] {
                 "safrit22", 
                 "liphitc",

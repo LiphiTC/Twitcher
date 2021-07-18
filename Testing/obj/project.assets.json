@@ -1751,11 +1751,10 @@
           "lib/netstandard2.0/TwitchLib.PubSub.dll": {}
         }
       },
-      "Twitcher/1.0.0": {
+      "Twitcher/0.0.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Config.Net": "4.15.0",
           "Newtonsoft.Json": "13.0.1",
           "TwitchLib": "3.2.0"
         },
@@ -6020,7 +6019,7 @@
         "twitchlib.pubsub.nuspec"
       ]
     },
-    "Twitcher/1.0.0": {
+    "Twitcher/0.0.2": {
       "type": "project",
       "path": "../src/Twitcher.csproj",
       "msbuildProject": "../src/Twitcher.csproj"
@@ -6031,7 +6030,7 @@
       "Config.Net >= 4.15.0",
       "Newtonsoft.Json >= 13.0.1",
       "TwitchLib >= 3.2.0",
-      "Twitcher >= 1.0.0"
+      "Twitcher >= 0.0.2"
     ]
   },
   "packageFolders": {

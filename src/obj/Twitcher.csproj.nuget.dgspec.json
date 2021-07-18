@@ -5,7 +5,7 @@
   },
   "projects": {
     "/home/liphi/LiphiBot/Twitcher/src/Twitcher.csproj": {
-      "version": "0.0.1",
+      "version": "0.0.2",
       "restore": {
         "projectUniqueName": "/home/liphi/LiphiBot/Twitcher/src/Twitcher.csproj",
         "projectName": "Twitcher",
@@ -38,10 +38,6 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "Config.Net": {
-              "target": "Package",
-              "version": "[4.15.0, )"
-            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.1, )"
