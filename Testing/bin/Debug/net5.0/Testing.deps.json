@@ -11,7 +11,7 @@
           "Config.Net": "4.15.0",
           "Newtonsoft.Json": "13.0.1",
           "TwitchLib": "3.2.0",
-          "Twitcher": "0.0.2"
+          "Twitcher": "0.0.6"
         },
         "runtime": {
           "Testing.dll": {}
@@ -1119,7 +1119,7 @@
           }
         }
       },
-      "Twitcher/0.0.2": {
+      "Twitcher/0.0.6": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "TwitchLib": "3.2.0"
@@ -1906,7 +1906,7 @@
       "path": "twitchlib.pubsub/3.2.0",
       "hashPath": "twitchlib.pubsub.3.2.0.nupkg.sha512"
     },
-    "Twitcher/0.0.2": {
+    "Twitcher/0.0.6": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

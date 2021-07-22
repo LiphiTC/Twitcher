@@ -42,11 +42,11 @@ namespace Twitcher.Controllers
                 && (!x.IsForVips || (x.IsForVips && args.ChatMessage.IsVip))
                 && (!x.IsForSubscriber || (x.IsForSubscriber && args.ChatMessage.IsSubscriber && (x.MinSubDate == 0 || x.MinSubDate >= args.ChatMessage.SubscribedMonthCount)))
                 );
-                var methods = new Dictionary<ControllerDefinition, ControllerMethodDefinition>();
+                var methods = new Dictionary<ControllerMethodDefinition, ControllerDefinition>();
                 foreach (var c in controllers)
                 {
                     foreach (var m in c.Methods)
-                    {
+                    { 
                         bool isStartWith = false;
                         if (m.StartWith != null)
                         {
@@ -105,22 +105,22 @@ namespace Twitcher.Controllers
                          && isContains
                          && isSame)
                         {
-                            methods.Add(c, m);
+                            methods.Add(m, c);
                         }
                     }
                 }
-                var singleMethod = methods.FirstOrDefault(x => x.Value.IsSingle);
+                var singleMethod = methods.FirstOrDefault(x => x.Key.IsSingle);
                 
 
-                if (!singleMethod.Equals(default(KeyValuePair<ControllerDefinition, ControllerMethodDefinition>)))
+                if (!singleMethod.Equals(default(KeyValuePair<ControllerMethodDefinition, ControllerDefinition>)))
                 {
-                    ExecuteControllerMethod(singleMethod.Value, singleMethod.Key, args.ChatMessage);
+                    ExecuteControllerMethod(singleMethod.Key, singleMethod.Value, args.ChatMessage);
                     return;
                 }
 
                 foreach (var method in methods)
                 {
-                    ExecuteControllerMethod(method.Value, method.Key, args.ChatMessage);
+                    ExecuteControllerMethod(method.Key, method.Value, args.ChatMessage);
                 }
             };
             return _client;
@@ -231,7 +231,7 @@ namespace Twitcher.Controllers
         }
         private ControllerMethodDefinition[] GetMethods(Type controller)
         {
-            IEnumerable<System.Reflection.MethodInfo> allMethods = controller.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            IEnumerable<System.Reflection.MethodInfo> allMethods = controller.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public );
             List<ControllerMethodDefinition> methods = new List<ControllerMethodDefinition>();
             foreach (var m in allMethods)
             {

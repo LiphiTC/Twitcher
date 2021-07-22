@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "BsCU4U1TObwvukG53t5838bl3tEyZl/eKkkRWLln9cv+D0xS5ZEgjXgVP7iO+PFtfiPkYXiArNG1oL/NbzURsA==",
+  "dgSpecHash": "7r/y/QvBDjiRcV+4gbc+NzL52lF/NRYd0MF/rgxlGAod5lxLvlRxKl+Th9JZ0Tldzsn1LbxVgjuLPIFySRaEtg==",
   "success": true,
   "projectFilePath": "/home/liphi/LiphiBot/Twitcher/Testing/Testing.csproj",
   "expectedPackageFiles": [
@@ -114,7 +114,7 @@
     "/home/liphi/.nuget/packages/twitchlib.client.models/3.2.0/twitchlib.client.models.3.2.0.nupkg.sha512",
     "/home/liphi/.nuget/packages/twitchlib.communication/1.0.3/twitchlib.communication.1.0.3.nupkg.sha512",
     "/home/liphi/.nuget/packages/twitchlib.pubsub/3.2.0/twitchlib.pubsub.3.2.0.nupkg.sha512",
-    "/home/liphi/.nuget/packages/twitcher/0.0.2/twitcher.0.0.2.nupkg.sha512",
+    "/home/liphi/.nuget/packages/twitcher/0.0.6/twitcher.0.0.6.nupkg.sha512",
     "/home/liphi/.nuget/packages/microsoft.aspnetcore.app.ref/5.0.0/microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
   ],
   "logs": []

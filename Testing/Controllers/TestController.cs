@@ -3,6 +3,9 @@ using Twitcher.Controllers.Attributes;
 using System;
 using System.Threading;
 using Twitcher.Controllers.JsonHelper;
+using Twitcher.Controllers.APIHelper;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Testing.Controllers
 {
@@ -10,9 +13,11 @@ namespace Testing.Controllers
     public class TestController : Controller
     {
         private readonly JsonHelper _jsonHelper;
-        public TestController(JsonHelper helper)
+        private readonly APIHelper _api;
+        public TestController(JsonHelper helper, APIHelper api)
         {
             _jsonHelper = helper;
+            _api = api;
         }
 
         [StartWith("!ойчто", IsFullWord = true)]
@@ -82,26 +87,18 @@ namespace Testing.Controllers
         }
 
         [CoolDown(5)]
-        [StartWith("!answer")]
-        public void Answer()
+        [StartWith("!follow")]
+        public async void Follow()
         {
-            string[] splited = Message.Message.Split(' ');
-            if (splited.Length == 1)
-            {
-                SendAnswer("WeirdChamp");
-                return;
-            }
-            if (splited[1] == "PepegaPog")
-            {
-                SendAnswer("Woah lm");
-                return;
-            }
-            if (splited[1] == "Glass")
-            {
-                SendAnswer("ты прошёл peepoClap");
-                return;
-            }
-            SendAnswer("NOPE");
+            var YEP = await _api.User.GetFollowStartDateAsync(_api.Channel);
+            SendAnswer(YEP.ToString());
+        }
+        [CoolDown(5)]
+        [StartWith("!age")]
+        public async void Age()
+        {
+            var YEP = await _api.API.Helix.Users.GetUsersAsync(logins: new List<string>() { Message.Username });
+            SendAnswer(YEP.Users.First().CreatedAt.ToString());
         }
     }
 }

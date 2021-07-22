@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "Twitcher/0.0.2": {
+      "Twitcher/0.0.6": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "TwitchLib": "3.2.0"
@@ -604,7 +604,7 @@
     }
   },
   "libraries": {
-    "Twitcher/0.0.2": {
+    "Twitcher/0.0.6": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
