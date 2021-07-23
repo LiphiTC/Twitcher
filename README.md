@@ -1,5 +1,6 @@
-
-# Twitcher
+<p align="center"> 
+<img src="https://github.com/LiphiTC/Twitcher/blob/master/Images/icon.png" style="max-height: 300px;">
+</p>
 
 Twitcher is a C# library based on [TwitchLib](https://github.com/TwitchLib/TwitchLib) with some features
 
