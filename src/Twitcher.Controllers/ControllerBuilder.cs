@@ -8,6 +8,7 @@ using Twitcher.Controllers.Attributes;
 using TwitchLib.Client.Models;
 using System.Threading;
 using Twitcher.Controllers.Services;
+using Twitcher.Controllers.Parameters;
 
 namespace Twitcher.Controllers
 {
@@ -24,10 +25,14 @@ namespace Twitcher.Controllers
         public TwitcherClient BuildControllers()
         {
             RegisterControllers();
-            _client.Bot.OnJoinedChannel += (object sender, OnJoinedChannelArgs args) => {
+            RegisterParameterProvider<int?, IntParameterProvider>();
+            _client.Bot.OnJoinedChannel += (object sender, OnJoinedChannelArgs args) =>
+            {
                 Dictionary<ControllerMethodDefinition, DateTime> used = new Dictionary<ControllerMethodDefinition, DateTime>();
-                foreach(var c in _manager.Controllers) {
-                    foreach (var m in c.Methods) {
+                foreach (var c in _manager.Controllers)
+                {
+                    foreach (var m in c.Methods)
+                    {
                         used.Add(m, DateTime.MinValue);
                     }
                 }
@@ -46,7 +51,7 @@ namespace Twitcher.Controllers
                 foreach (var c in controllers)
                 {
                     foreach (var m in c.Methods)
-                    { 
+                    {
                         bool isStartWith = false;
                         if (m.StartWith != null)
                         {
@@ -110,7 +115,7 @@ namespace Twitcher.Controllers
                     }
                 }
                 var singleMethod = methods.FirstOrDefault(x => x.Key.IsSingle);
-                
+
 
                 if (!singleMethod.Equals(default(KeyValuePair<ControllerMethodDefinition, ControllerDefinition>)))
                 {
@@ -136,9 +141,10 @@ namespace Twitcher.Controllers
             var controller = Activator.CreateInstance(controllerDefinition.ControllerType, GetServices(controllerDefinition.ControllerType, message));
             controllerDefinition.ControllerType.GetProperty("Client").SetValue(controller, _client);
             controllerDefinition.ControllerType.GetProperty("Message").SetValue(controller, message);
-            methodDefinition.MethodInfo.Invoke(controller, new object[0]);
-
+            methodDefinition.MethodInfo.Invoke(controller,
+            GetControllerMethodParameters(methodDefinition, message));
         }
+
 
         public ControllerBuilder RegisterService<T, TSettings, TFactory>(TSettings settings)
          where T : class
@@ -152,6 +158,15 @@ namespace Twitcher.Controllers
 
             _manager.Services.Add(new Service(typeof(T), typeof(TFactory), settings));
 
+            return this;
+        }
+        public ControllerBuilder RegisterParameterProvider<T, TProvider>()
+         where TProvider : IParameterProvider<T>, new()
+        {
+            if (_manager.ParameterProviders.Any(x => x.ParameterType == typeof(T)))
+                throw new ArgumentException("This parameter provider is already registered");
+
+            _manager.ParameterProviders.Add(new ParameterProvider(typeof(TProvider), typeof(T)));
             return this;
         }
 
@@ -184,6 +199,29 @@ namespace Twitcher.Controllers
             }
             if (result.Count == 0 && isServiceFound)
                 throw new ServiceNotFoundException();
+            return result.ToArray();
+        }
+        private object[] GetControllerMethodParameters(ControllerMethodDefinition methodDefinition, ChatMessage message)
+        {
+            ParameterInfo[] parameters = methodDefinition.MethodInfo.GetParameters();
+            List<object> result = new();
+            List<string> splited = message.Message.Split(' ').ToList();
+            splited.RemoveAt(0);
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (splited.Count <= i)
+                {
+                    result.Add(null);
+                    continue;
+                }
+                var provider = _manager.ParameterProviders.FirstOrDefault(x => x.ParameterType == parameters[i].ParameterType);
+                if (provider.Equals(default(ParameterProvider)))
+                    throw new ArgumentException($"Parameter Provider for type {parameters[i].ParameterType} not found");
+
+                object providerInstance = Activator.CreateInstance(provider.ParameterProviderType);
+                result.Add(provider.ParameterProviderType.GetMethod("ParseParameter").Invoke(providerInstance, new object[] { splited[i], message }));
+            }
             return result.ToArray();
         }
         private void RegisterControllers()
@@ -231,7 +269,7 @@ namespace Twitcher.Controllers
         }
         private ControllerMethodDefinition[] GetMethods(Type controller)
         {
-            IEnumerable<System.Reflection.MethodInfo> allMethods = controller.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public );
+            IEnumerable<System.Reflection.MethodInfo> allMethods = controller.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
             List<ControllerMethodDefinition> methods = new List<ControllerMethodDefinition>();
             foreach (var m in allMethods)
             {

@@ -6,6 +6,7 @@ using Twitcher.Controllers.JsonHelper;
 using Twitcher.Controllers.APIHelper;
 using System.Collections.Generic;
 using System.Linq;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Testing.Controllers
 {
@@ -95,10 +96,17 @@ namespace Testing.Controllers
         }
         [CoolDown(5)]
         [StartWith("!age")]
-        public async void Age()
+        public async void Age(Twitcher.Controllers.APIHelper.User user1)
         {
-            var YEP = await _api.API.Helix.Users.GetUsersAsync(logins: new List<string>() { Message.Username });
-            SendAnswer(YEP.Users.First().CreatedAt.ToString());
+            GetUsersResponse YEP;
+            if (user1 is null)
+                YEP = await _api.API.Helix.Users.GetUsersAsync(logins: new List<string>() { Message.Username });
+            else
+                YEP = await _api.API.Helix.Users.GetUsersAsync(logins: new List<string>() { user1.UserName });
+           
+            SendAnswer(YEP.Users.First().CreatedAt.ToString() + " (" + (DateTime.Now - YEP.Users.First().CreatedAt).Days + " days)");
+
+
         }
     }
 }

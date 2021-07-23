@@ -13,18 +13,16 @@ namespace Testing
         {
             Console.WriteLine(Environment.Version);
             TwitcherClient d = new TwitcherClient()
-            .UseTwitchLibProvider(new ConnectionCredentials("LiphiTC", "w08jht8j9nrqfvnieb9c1vsnoyc4me"))
+            .UseTwitchLibProvider(new ConnectionCredentials("LiphiTC",                                 "gncuwkky0k1d84d6o27rq8pp2pr0v9"))
             .JoinChannels(new string[] {
                 "safrit22",
-                "liphitc",
+                "LiphiTC",
                 "toxynno" })
             .UseControllers()
             .UseJsonHelper("Json")
             .UseAPIHelper("gp762nuuoqcoxypju8c569th9wz7q5", "3vy90gyb0qnunh0ldmfok9428fpvi7")
             .BuildControllers()
             .Connect();
-
-            Console.WriteLine("Hello World!");
             Console.ReadLine();
         }
     }
