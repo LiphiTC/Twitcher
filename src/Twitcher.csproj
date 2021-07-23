@@ -2,17 +2,22 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>Twitcher</PackageId>
-    <Version>0.0.6</Version>
+    <Version>0.0.7-rc</Version>
     <Authors>Liphi</Authors>
     <Company>Liphi</Company>
     <PackageTags>TwitchLib;Twitch;Twitcher</PackageTags>
     <Description>
-      https://github.com/LiphiTC/Twitcher
+      Yet Another Bot
     </Description>
+    <PackageIcon>icon.png</PackageIcon>
+    <projectUrl>https://github.com/LiphiTC/Twitcher</projectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>  
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="TwitchLib" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../Images/icon.png" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>
