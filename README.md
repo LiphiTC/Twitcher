@@ -62,9 +62,9 @@ Attributes for controllers and controller methods:
 Also, for methods you can use:
 ```c#
 [NonCommand] 
-[StartWith(string, RegiterCheck(bool), IsFullWord(bool))]
-[Contains(string, RegiterCheck(bool))]
-[Same(string, RegiterCheck(bool))]
+[StartWith(string, RegisterCheck(bool), IsFullWord(bool))]
+[Contains(string, RegisterCheck(bool))]
+[Same(string, RegisterCheck(bool))]
 [Single]
 ```
 By default all methods of all matching controllers will be executed\
