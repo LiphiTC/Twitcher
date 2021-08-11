@@ -5,7 +5,7 @@
   },
   "projects": {
     "/home/liphi/LiphiBot/Twitcher/src/Twitcher.csproj": {
-      "version": "0.0.7-rc",
+      "version": "0.1.0",
       "restore": {
         "projectUniqueName": "/home/liphi/LiphiBot/Twitcher/src/Twitcher.csproj",
         "projectName": "Twitcher",

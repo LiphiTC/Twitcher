@@ -8,7 +8,6 @@ namespace Twitcher.Controllers.APIHelper
     {
         public User ParseParameter(string parameter, ChatMessage message)
         {
-
             parameter = parameter.Replace("@", "");
             parameter = parameter.Replace(",", "");
             parameter = parameter.ToLower();

@@ -43,8 +43,9 @@ namespace Twitcher.Controllers
                 var controllers = _manager.Controllers.Where(x =>
                     (x.Channels.Any(m => m == "any") || x.Channels.Any(m => m == args.ChatMessage.Channel.ToLower()))
                 && (x.Users.Any(m => m == "any") || x.Users.Any(m => m == args.ChatMessage.Username))
-                && (!x.IsForMod || (x.IsForMod && args.ChatMessage.IsModerator))
-                && (!x.IsForVips || (x.IsForVips && args.ChatMessage.IsVip))
+                && (!x.IsForBroadcaster || (x.IsForBroadcaster && args.ChatMessage.IsBroadcaster))
+                && (!x.IsForMod || (x.IsForMod && (args.ChatMessage.IsModerator || args.ChatMessage.IsBroadcaster)))
+                && (!x.IsForVips || (x.IsForVips && (args.ChatMessage.IsVip || args.ChatMessage.IsModerator || args.ChatMessage.IsBroadcaster)))
                 && (!x.IsForSubscriber || (x.IsForSubscriber && args.ChatMessage.IsSubscriber && (x.MinSubDate == 0 || x.MinSubDate >= args.ChatMessage.SubscribedMonthCount)))
                 );
                 var methods = new Dictionary<ControllerMethodDefinition, ControllerDefinition>();
@@ -102,8 +103,9 @@ namespace Twitcher.Controllers
                         }
                         if ((m.Channels.Any(m => m == "any") || m.Channels.Any(m => m == args.ChatMessage.Channel.ToLower()))
                          && (m.Users.Any(m => m == "any") || m.Users.Any(m => m == args.ChatMessage.Username))
-                         && (!m.IsForMod || (m.IsForMod && args.ChatMessage.IsModerator))
-                         && (!m.IsForVips || (m.IsForVips && args.ChatMessage.IsVip))
+                         && (!m.IsForBroadcaster || (m.IsForBroadcaster && args.ChatMessage.IsBroadcaster))
+                          && (!m.IsForMod || (m.IsForMod && (args.ChatMessage.IsModerator || args.ChatMessage.IsBroadcaster)))
+                         && (!m.IsForVips || (m.IsForVips && (args.ChatMessage.IsVip || args.ChatMessage.IsModerator || args.ChatMessage.IsBroadcaster)))
                          && (!m.IsForSubscriber ||
                             (m.IsForSubscriber && args.ChatMessage.IsSubscriber && (m.MinSubDate == 0 || m.MinSubDate <= args.ChatMessage.SubscribedMonthCount)))
                          && isStartWith
@@ -248,7 +250,7 @@ namespace Twitcher.Controllers
                     users.Add(u.User);
                 }
 
-                //BroadcasterAttribute broadcasterAttribute = t.GetCustomAttribute<BroadcasterAttribute>();
+                BroadcasterAttribute broadcasterAttribute = t.GetCustomAttribute<BroadcasterAttribute>();
                 ModAttribute modAttribute = t.GetCustomAttribute<ModAttribute>();
                 VipAttribute vipAttribute = t.GetCustomAttribute<VipAttribute>();
                 SubscriberAttribute subscriberAttribute = t.GetCustomAttribute<SubscriberAttribute>();
@@ -260,6 +262,7 @@ namespace Twitcher.Controllers
                     GetMethods(t),
                     channels.Count == 0 ? new string[] { "any" } : channels.ToArray(),
                     users.Count == 0 ? new string[] { "any" } : users.ToArray(),
+                    broadcasterAttribute == null ? false : true,
                     modAttribute == null ? false : true,
                     vipAttribute == null ? false : true,
                     subscriberAttribute == null ? false : true,
@@ -290,7 +293,7 @@ namespace Twitcher.Controllers
                     users.Add(u.User);
                 }
 
-                //BroadcasterAttribute broadcasterAttribute = m.GetCustomAttribute<BroadcasterAttribute>();
+                BroadcasterAttribute broadcasterAttribute = m.GetCustomAttribute<BroadcasterAttribute>();
                 ModAttribute modAttribute = m.GetCustomAttribute<ModAttribute>();
                 VipAttribute vipAttribute = m.GetCustomAttribute<VipAttribute>();
                 SubscriberAttribute subscriberAttribute = m.GetCustomAttribute<SubscriberAttribute>();
@@ -308,6 +311,7 @@ namespace Twitcher.Controllers
                     m,
                     channels.Count == 0 ? new string[] { "any" } : channels.ToArray(),
                     users.Count == 0 ? new string[] { "any" } : users.ToArray(),
+                    broadcasterAttribute == null ? false : true,
                     modAttribute == null ? false : true,
                     vipAttribute == null ? false : true,
                     subscriberAttribute == null ? false : true,

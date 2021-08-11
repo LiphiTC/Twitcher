@@ -20,6 +20,7 @@ namespace Twitcher.Controllers
         /// </summary>
         /// <value></value>
         public string[] Users { get; }
+        public bool IsForBroadcaster { get; }
         public bool IsForMod { get; }
         public bool IsForVips { get; }
         public bool IsForSubscriber { get; }
@@ -41,7 +42,7 @@ namespace Twitcher.Controllers
         public bool SameRegisterCheck { get; }
 
         public ControllerMethodDefinition(MethodInfo methodInfo, string[] channels, string[] users,
-        bool isForMods, bool isForVips, bool isForSubscriber,
+        bool isForBroadcaster, bool isForMods, bool isForVips, bool isForSubscriber,
         int minSubDate, string contains, bool containsRegisterCheck,
         string startWith, bool startWithFullWord, bool startWithRegiterCheck,
         bool isSingle, long coolDown, string same, bool sameRegisterCheck)
@@ -49,6 +50,7 @@ namespace Twitcher.Controllers
             MethodInfo = methodInfo;
             Channels = channels;
             Users = users;
+            IsForBroadcaster = isForBroadcaster;
             IsForMod = isForMods;
             IsForVips = isForVips;
             IsForSubscriber = isForSubscriber;

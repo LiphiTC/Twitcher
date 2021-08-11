@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>Twitcher</PackageId>
-    <Version>0.0.7-rc</Version>
+    <Version>0.1.0</Version>
     <Authors>Liphi</Authors>
     <Company>Liphi</Company>
     <PackageTags>TwitchLib;Twitch;Twitcher</PackageTags>
